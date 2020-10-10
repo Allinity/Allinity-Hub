@@ -1,22 +1,11 @@
 local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
 
 local UI = Material.Load({
-    Title = "Allinity Hub                                 discord.gg/placeholder",
-    Style = 3,
+    Title = "Allinity Hub",
+    Style = 1,
     SizeX = 400,
     SizeY = 300,
     Theme = "Dark"
-})
-
-local Page = UI.New({
-    Title = "Home"
-})
-
-Page.Button({
-    Text = "Credits In forum",
-    Callback = function()
-        print('forum link')
-    end
 })
 
 local Page = UI.New({
