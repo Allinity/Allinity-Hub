@@ -1,0 +1,164 @@
+--[[
+local a
+local b
+for i,v in next, getgc() do
+  if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
+     a = getfenv(v);
+     b = v
+  end
+end
+game.RunService.Heartbeat:Connect(function()
+   debug.setupvalue(b,5,420)
+   a.DISABLED = false
+   a.DISABLED2 = false
+   a.currentspread = 0
+   a.recoil = 0
+   a.mode = "automatic"
+end)
+
+
+]]
+local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
+local player = game:GetService("Players").LocalPlayer
+local char = player.Character
+local rootpart = char.HumanoidRootPart
+
+local UI = Material.Load({
+    Title = "Allinity Hub",
+    Style = 1,
+    SizeX = 400,
+    SizeY = 300,
+    Theme = "Dark"
+})
+
+local Page = UI.New({
+    Title = "Arsenal"
+})
+
+Page.Button({
+    Text = "HitBox Extender",
+    Callback = function()
+        local size = 20
+        local hrpsize = 18
+        for i,v in next, game.Players:GetPlayers() do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                game:GetService("RunService").Heartbeat:Connect(function()
+                    for _, e in next, getconnections(v.Character.HeadHB:GetPropertyChangedSignal("Size")) do
+                    e:Disable()
+                    end
+
+                    for _, e in next, getconnections(v.Character.HeadHB.Changed) do
+                    e:Disable()
+                    end
+
+                    pcall(function()
+                        v.Character.HeadHB.Size = Vector3.new(size, size, size)
+                        v.Character.HeadHB.Transparency = 0.5
+                        v.Character.HeadHB.CanCollide = false
+                        v.Character.HumanoidRootPart.Size = Vector3.new(hrpsize, hrpsize, hrpsize)
+                        v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                end)
+            end
+        end
+    end,
+    Menu = {
+        Information = function(self)
+            UI.Banner({
+                Text = "HItbox Extender, may have to re execute every once and a while"            
+            })
+        end
+    }
+    })
+
+Page.Button({
+    Text = "OP Obvious HitBox Extender",
+    Callback = function()
+        local size = 30
+        local hrpsize = 28
+        for i,v in next, game.Players:GetPlayers() do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                game:GetService("RunService").Heartbeat:Connect(function()
+                    for _, e in next, getconnections(v.Character.HeadHB:GetPropertyChangedSignal("Size")) do
+                    e:Disable()
+                    end
+
+                    for _, e in next, getconnections(v.Character.HeadHB.Changed) do
+                    e:Disable()
+                    end
+
+                    pcall(function()
+                        v.Character.HeadHB.Size = Vector3.new(size, size, size)
+                        v.Character.HeadHB.Transparency = 0.5
+                        v.Character.HeadHB.CanCollide = false
+                        v.Character.HumanoidRootPart.Size = Vector3.new(hrpsize, hrpsize, hrpsize)
+                        v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                end)
+            end
+        end
+    end,
+    Menu = {
+        Information = function(self)
+            UI.Banner({
+                Text = "More op version of HItbox Extender, may have to re execute every once and a while"            
+            })
+        end
+    }
+    })
+
+Page.Button({
+    Text = "Mod Gun",
+    Callback = function()
+        local a
+        local b
+        for i,v in next, getgc() do
+            if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
+                a = getfenv(v);
+                b = v
+            end
+        end
+        game.RunService.Heartbeat:Connect(function()
+            debug.setupvalue(b,5,420)
+            a.DISABLED = false
+            a.DISABLED2 = false
+            a.currentspread = 0
+            a.recoil = 0
+            a.mode = "automatic"
+        end)
+    end,
+    Menu = {
+        Information = function(self)
+            UI.Banner({
+                Text = "Mod All Guns"            
+            })
+        end
+    }
+    })
+
+Page.Button({
+    Text = "Mod Recoil Spread Ammo",
+    Callback = function()
+        local a
+        local b
+        for i,v in next, getgc() do
+            if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
+                a = getfenv(v);
+                b = v
+            end
+        end
+        game.RunService.Heartbeat:Connect(function()
+            debug.setupvalue(b,5,420)
+            a.currentspread = 0
+            a.recoil = 0
+            a.mode = "automatic"
+        end)
+    end,
+    Menu = {
+        Information = function(self)
+            UI.Banner({
+                Text = "Mod Recoil Ammo Spread"            
+            })
+        end
+    }
+    })
