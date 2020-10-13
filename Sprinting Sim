@@ -1,0 +1,85 @@
+local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
+local orbsfolder = game:GetService("Workspace").OrbSpawns
+local player = game:GetService("Players").LocalPlayer
+local char = player.Character
+local rootpart = char.HumanoidRootPart
+
+local UI = Material.Load({
+    Title = "Allinity Hub",
+    Style = 1,
+    SizeX = 400,
+    SizeY = 300,
+    Theme = "Jester"
+})
+
+local Page = UI.New({
+    Title = "Sprinting Sim"
+})
+
+Page.Toggle({
+    Text = "Auto Sprint",
+    Callback = function (value)
+        _G.sprint = value
+
+        while true do 
+            if not _G.sprint then return end
+            local Event = game:GetService("ReplicatedStorage").Remotes.AddSpeed
+            Event:FireServer()
+            wait()
+        end
+        Enabled = false
+    end,
+Menu = {
+    Information = function(self)
+        UI.Banner({
+            Text = "Automatically Adds Speed"            
+        })
+    end
+}
+})
+
+Page.Toggle({
+    Text = "Auto Rebirth",
+    Callback = function (value)
+        _G.rebirth = value
+
+        while true do 
+            if not _G.rebirth then return end
+            local Event = game:GetService("ReplicatedStorage").Remotes.Rebirth
+            Event:FireServer()
+            wait()
+        end
+        Enabled = false
+    end,
+Menu = {
+    Information = function(self)
+        UI.Banner({
+            Text = "Automatically Rebirths"            
+        })
+    end
+}
+})
+
+Page.Toggle({
+    Text = "Teleport Orbs To You",
+    Callback = function (value)
+        _G.orb = value
+
+        while true do
+            if not _G.orb then return end
+            for i,v in pairs(orbsfolder:GetChildren()) do
+            if v.Name == "Orb" then
+                v.CFrame = rootpart.CFrame
+                wait()
+            end
+        end
+    end
+end,
+Menu = {
+    Information = function(self)
+        UI.Banner({
+            Text = "Will go on for a long time so don't recommend"            
+        })
+    end
+}
+})
