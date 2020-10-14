@@ -1,34 +1,16 @@
---[[
-local a
-local b
-for i,v in next, getgc() do
-  if (type(v) == 'function') and (debug.getinfo(v).name == 'firebullet') then
-     a = getfenv(v);
-     b = v
-  end
-end
-game.RunService.Heartbeat:Connect(function()
-   debug.setupvalue(b,5,420)
-   a.DISABLED = false
-   a.DISABLED2 = false
-   a.currentspread = 0
-   a.recoil = 0
-   a.mode = "automatic"
-end)
-
-
-]]
 local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
-local player = game:GetService("Players").LocalPlayer
-local char = player.Character
-local rootpart = char.HumanoidRootPart
+local localPlayer = game:GetService("Players").LocalPlayer
+local currentCamera = game:GetService("Workspace").CurrentCamera
+local mouse = localPlayer:GetMouse()
+local teamCheck = true
+local enabled = false
 
 local UI = Material.Load({
     Title = "Allinity Hub",
     Style = 1,
     SizeX = 400,
     SizeY = 300,
-    Theme = "Jester"
+    Theme = "Dark"
 })
 
 local Page = UI.New({
@@ -36,40 +18,85 @@ local Page = UI.New({
 })
 
 Page.Button({
-    Text = "HitBox Extender",
+    Text = "Silent Aim (T For TeamCheck = For Toggle)",
     Callback = function()
-        local size = 20
-        local hrpsize = 18
-        for i,v in next, game.Players:GetPlayers() do
-            if v.Name ~= game.Players.LocalPlayer.Name then
-                game:GetService("RunService").Heartbeat:Connect(function()
-                    for _, e in next, getconnections(v.Character.HeadHB:GetPropertyChangedSignal("Size")) do
-                    e:Disable()
-                    end
+        while true do
+            wait(10)
 
-                    for _, e in next, getconnections(v.Character.HeadHB.Changed) do
-                    e:Disable()
-                    end
+            function getClosestPlayerToCursor() [nonamecall]
+                local closestPlayer = nil
+                local shortestDistance = math.huge
+            
+            for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name ~= localPlayer.Name then
+            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Head") and teamCheck and v.Team ~= localPlayer.Team then
+                local pos = currentCamera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+            
+                if magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            elseif v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Head") and not teamCheck then
+                local pos = currentCamera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+            
+                if magnitude < shortestDistance then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            end
+            end
+            end
+            
+            return closestPlayer or localPlayer
+            end
+            
+            game:GetService("UserInputService").InputBegan:Connect(function(input, onGui)
+            if not onGui and input.KeyCode == Enum.KeyCode.T then
+            teamCheck = not teamCheck
+            end
+            end)
 
-                    pcall(function()
-                        v.Character.HeadHB.Size = Vector3.new(size, size, size)
-                        v.Character.HeadHB.Transparency = 0.5
-                        v.Character.HeadHB.CanCollide = false
-                        v.Character.HumanoidRootPart.Size = Vector3.new(hrpsize, hrpsize, hrpsize)
-                        v.Character.HumanoidRootPart.CanCollide = false
-                    end)
-                end)
+            game:GetService("UserInputService").InputBegan:Connect(function(input, onGui)
+            if not onGui and input.KeyCode == Enum.KeyCode.Equals then
+            enabled = not enabled
+            end
+            end)
+            
+            local mt = getrawmetatable(game)
+            local oldNamecall = mt.__namecall
+            if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
+            local namecallMethod = getnamecallmethod or get_namecall_method
+            local newClose = newcclosure or function(f) return f end
+            
+            mt.__namecall = newClose(function(...) [nonamecall]
+            local method = namecallMethod()
+            local args = {...}
+            
+            if tostring(method) == "FireServer" and tostring(args[1]) == "HitPart" then
+            args[2] = getClosestPlayerToCursor().Character.HumanoidRootPart
+            args[3] = getClosestPlayerToCursor().Character.HumanoidRootPart.Position
+            
+            return oldNamecall(unpack(args))
+            end
+            
+            return oldNamecall(...)
+            end)
+            
+            if setreadonly then setreadonly(mt, true) else make_writeable(mt, false)
             end
         end
     end,
-    Menu = {
-        Information = function(self)
-            UI.Banner({
-                Text = "HItbox Extender, may have to re execute every once and a while"            
-            })
-        end
-    }
-    })
+            
+Menu = {
+Information = function(self)
+   UI.Banner({
+       Text = "Does what the name says"            
+   })
+end
+}
+})
 
 Page.Button({
     Text = "OP Obvious HitBox Extender",
