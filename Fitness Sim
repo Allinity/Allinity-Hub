@@ -70,6 +70,10 @@ local player = game:GetService("Players").LocalPlayer
 local char = player.Character
 local rootpart = char.HumanoidRootPart
 
+UI.Banner({
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
+})
+
 local UI = Material.Load({
     Title = "Allinity Hub",
     Style = 1,
