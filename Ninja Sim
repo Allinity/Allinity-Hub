@@ -8,6 +8,10 @@ local coinsfolder = game:GetService("Workspace").spawnedCoins.Valley
 local hoopfolder = game:GetService("Workspace").Hoops
 local bossfolder = game:GetService("Workspace").bossFolder
 
+UI.Banner({
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
+})
+
 local UI = Material.Load({
      Title = "Allinity Hub",
      Style = 1,
