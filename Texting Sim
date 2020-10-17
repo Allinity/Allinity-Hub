@@ -6,16 +6,16 @@ local rtp = chr.HumanoidRootPart
 local coinfolder = game:GetService("Workspace").Coins
 local gemfolder = game:GetService("Workspace").Gems
 
-UI.Banner({
-	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
-})
-
 local UI = Material.Load({
     Title = "Allinity Hub",
     Style = 1,
     SizeX = 400,
     SizeY = 300,
     Theme = "Jester"
+})
+
+UI.Banner({
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
 })
 
 local Page = UI.New({
