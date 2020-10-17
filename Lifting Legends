@@ -4,6 +4,10 @@ local char = player.Character
 local rootpart = char.HumanoidRootPart
 local bossfolder = game:GetService("Workspace").BossFolder
 
+UI.Banner({
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
+})
+
 local UI = Material.Load({
     Title = "Allinity Hub",
     Style = 1,
