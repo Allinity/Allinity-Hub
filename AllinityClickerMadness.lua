@@ -8,6 +8,10 @@ local UI = Material.Load({
     Theme = "Jester"
 })
 
+UI.Banner({
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
+})
+
 local Page = UI.New({
     Title = "Clicker Madness"
 })
