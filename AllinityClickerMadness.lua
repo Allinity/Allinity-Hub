@@ -18,7 +18,7 @@ local Page = UI.New({
 
 Page.Toggle({
     Text = "Auto Click",
-    Callback = function(value)
+    Callback = function (value)
         _G.click = value
 
         while true do
@@ -41,7 +41,7 @@ Menu = {
 
 Page.Toggle({
     Text = "Teleport Gems/Clicks To You",
-    Callback = function(value)
+    Callback = function (value)
         _G.Farm = value
 
         while true do
@@ -66,7 +66,7 @@ Menu = {
 
 Page.Dropdown({
     Text = "Give Gamepass",
-    Callback = function(value)
+    Callback = function (value)
         game:GetService"Players".LocalPlayer.Gamepasses[value].Value = true
     end,
     Options = {"Sprint", "AutoRebirth", "ExplosiveCursors", "DoubleGems", "VIP", "Luck", "UnlimitedPets", "DoubleClicks", "TripleHatch"}
@@ -74,7 +74,7 @@ Page.Dropdown({
 
 Page.Dropdown({
     Text = "Rebirth",
-    Callback = function(value)
+    Callback = function (value)
         game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths:FireServer(value)
     end,
     Options = {"1", "10", "100", "1000", "10000", "100000", "1000000", "10000000", "100000000", "1000000000", "10000000000", "100000000000"}
