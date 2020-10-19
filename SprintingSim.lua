@@ -1,5 +1,3 @@
---1165.1261, 197.532837, -170.799149, 0.939820886, 1.68828489e-08, 0.341667503, -4.16935251e-08, 1, 6.52728076e-08, -0.341667503, -7.55900729e-08, 0.939820886
-
 local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
 local orbsfolder = game:GetService("Workspace").OrbSpawns
 local player = game:GetService("Players").LocalPlayer
@@ -20,7 +18,7 @@ UI.Banner({
 })
 
 local Page = UI.New({
-    Title = "Speed Run Sim"
+    Title = "Main"
 })
 
 Page.Toggle({
@@ -66,6 +64,9 @@ Menu = {
     end
 }
 })
+
+local Page = UI.New({
+    Title =  'Teleports'
 
 Page.Toggle({
     Text = "Teleport Orbs To You",
@@ -284,5 +285,51 @@ Page.Button({
                 Text = "Buy Eigth Egg"            
             })
         end
+    }
+    })
+
+local Page = UI.New({
+    Title = 'Credits'
+})
+
+Page.Button({
+    Text = "Twink Marie UI Lib Creator V3RM",
+    Callback = function()
+        setclipboard('https://v3rmillion.net/member.php?action=profile&uid=1078854')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy UI Lib Creator's V3rm"            
+       })
+    end
+    }
+    })
+
+Page.Button({
+    Text = "Allinity Hub Creator V3rm",
+    Callback = function()
+        setclipboard('https://v3rmillion.net/member.php?action=profile&uid=1806998')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy Allinity Hub Creator's V3rm"            
+       })
+    end
+    }
+    })
+
+Page.Button({
+    Text = "Allinity Hub Creator Discord",
+    Callback = function()
+        setclipboard('Allinity#6969')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy Allinity Hub Creator's Discord"            
+       })
+    end
     }
     })
