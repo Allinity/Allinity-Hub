@@ -9,7 +9,7 @@ local UI = Material.Load({
 })
 
 UI.Banner({
-	Text = "Welcome! Thanks for using Allinity Hub"
+	Text = "Welcome! Thanks for using Allinity Hub! Don't forget to vouch or like my post ;)"
 })
 
 local Page = UI.New({
