@@ -133,9 +133,7 @@ Page.Button({
             
             if setreadonly then setreadonly(mt, true) else make_writeable(mt, false)
             end
-        end
-    end,
-            
+        end,
 Menu = {
 Information = function(self)
    UI.Banner({
