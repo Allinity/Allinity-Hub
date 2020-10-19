@@ -17,7 +17,7 @@ UI.Banner({
 })
 
 local Page = UI.New({
-    Title = "Lifting Legends"
+    Title = "Main"
 })
 
 Page.Toggle({
@@ -367,3 +367,50 @@ Page.Button({
         end
     }
 })
+
+
+local Page = UI.New({
+    Title = 'Credits'
+})
+
+Page.Button({
+    Text = "Twink Marie UI Lib Creator V3RM",
+    Callback = function()
+        setclipboard('https://v3rmillion.net/member.php?action=profile&uid=1078854')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy UI Lib Creator's V3rm"            
+       })
+    end
+    }
+    })
+
+Page.Button({
+    Text = "Allinity Hub Creator V3rm",
+    Callback = function()
+        setclipboard('https://v3rmillion.net/member.php?action=profile&uid=1806998')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy Allinity Hub Creator's V3rm"            
+       })
+    end
+    }
+    })
+
+Page.Button({
+    Text = "Allinity Hub Creator Discord",
+    Callback = function()
+        setclipboard('Allinity#6969')
+    end,
+Menu = {
+    Information = function(self)
+       UI.Banner({
+           Text = "Click To Copy Allinity Hub Creator's Discord"            
+       })
+    end
+    }
+    })
