@@ -1,53 +1,9 @@
 local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
-local function CreateInstance(cls,props)
-    local inst = Instance.new(cls)
-    for i,v in pairs(props) do
-        inst[i] = v
-    end
-    return inst
-    end
-     
-    local players = game:GetService"Players"
-    local Player = game:GetService("Players").LocalPlayer
-    local Camera = game:GetService("Workspace").CurrentCamera
-    local mouse = Player:GetMouse()
-    local RS = game:GetService("RunService")
-    local Center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y + 150 / 2)
-    local teamCheck = true
-    local enabled = false
-    local UIS = game:GetService("UserInputService")
-    local localp = players.LocalPlayer
-    local uis = game:GetService"UserInputService"
-    
-    local cheats = {
-    
-        esp = true;
-        esptarget = "Enemy";
-        bomb = true;
-        chams = true;
-        chamstarget = "Enemy";
-        weapons = true;
-        fovchanger = true;
-    
-    esp_enemycolor = Color3.fromRGB(220,80,40);
-    esp_teamcolor = Color3.fromRGB(40, 220, 220);
-    esp_bombcolor = Color3.fromRGB(220,60,210);
-    esp_bombcarriercolor = Color3.fromRGB(220,210,40);
-    esp_weaponcolor = Color3.fromRGB(200,200,200);
-    esp_itemtextcolor = Color3.fromRGB(220,60,210);
-    
-    weptype = "Pistols";
-    }
-    
-    local espTargets = {"Enemy", "Both"}
-    
-    local espfolder = Instance.new("Folder", game:GetService"CoreGui")
-    espfolder.Name = "espstuff"
 
 local UI = Material.Load({
     Title = "Allinity Hub",
     Style = 1,
-    SizeX = 400,
+    SizeX = 500,
     SizeY = 300,
     Theme = "Jester"
 })
@@ -60,311 +16,353 @@ local Page = UI.New({
     Title = "Main"
 })
 
-Page.Button({
-    Text = "Silent Aim (T For TeamCheck = For Toggle)",
-    Callback = function()
+Page.Toggle({
+    Text = 'Silent Aim',
+    Callback = function(arg)
+        getgenv().SilentAim = arg
+    end
+})
 
-        local function getClosestPlayerToCursor() [nonamecall]
-                local closestPlayer = nil
-                local shortestDistance = math.huge
-            
-            for i, v in pairs(game:GetService("Players"):GetPlayers()) do
-            if v.Name ~= Player.Name then
-            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Head") and teamCheck and v.Team ~= Player.Team then
-                local pos = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+Page.Toggle({
+    Text = 'Team Check',
+    Callback = function(arg)
+        teamCheck = arg
+    end
+})
+
+getgenv().SilentAim = false
+
+local localPlayer = game:GetService("Players").LocalPlayer
+local currentCamera = game:GetService("Workspace").CurrentCamera
+local mouse = localPlayer:GetMouse()
+local teamCheck = false
+
+function getClosestPlayerToCursor() [nonamecall]
+    local closestPlayer = nil
+    local shortestDistance = math.huge
+    
+    for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+        if v.Name ~= localPlayer.Name then
+            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Head") and teamCheck and v.Team ~= localPlayer.Team then
+                local pos = currentCamera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
                 local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
-            
+
                 if magnitude < shortestDistance then
                     closestPlayer = v
                     shortestDistance = magnitude
                 end
             elseif v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Head") and not teamCheck then
-                local pos = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                local pos = currentCamera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
                 local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
-            
+
                 if magnitude < shortestDistance then
                     closestPlayer = v
                     shortestDistance = magnitude
                 end
             end
-            end
-            end
-            
-            return closestPlayer or Player
-            end
-            
-            game:GetService("UserInputService").InputBegan:Connect(function(input, onGui)
-            if not onGui and input.KeyCode == Enum.KeyCode.T then
-            teamCheck = not teamCheck
-            end
-            end)
-
-            game:GetService("UserInputService").InputBegan:Connect(function(input, onGui)
-            if not onGui and input.KeyCode == Enum.KeyCode.Equals then
-            enabled = not enabled
-            end
-            end)
-            
-            local mt = getrawmetatable(game)
-            local oldNamecall = mt.__namecall
-            if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
-            local namecallMethod = getnamecallmethod or get_namecall_method
-            local newClose = newcclosure or function(f) return f end
-            
-            mt.__namecall = newClose(function(...) [nonamecall]
-            local method = namecallMethod()
-            local args = {...}
-            
-            if tostring(method) == "FireServer" and tostring(args[1]) == "HitPart" then
-            args[2] = getClosestPlayerToCursor().Character.HumanoidRootPart
-            args[3] = getClosestPlayerToCursor().Character.HumanoidRootPart.Position
-            
-            return oldNamecall(unpack(args))
-            end
-            
-            return oldNamecall(...)
-            end)
-            
-            if setreadonly then setreadonly(mt, true) else make_writeable(mt, false)
-            end
-        end,
-Menu = {
-Information = function(self)
-   UI.Banner({
-       Text = "Does what the name says"            
-   })
+        end
+    end
+    
+    return closestPlayer or localPlayer
 end
-}
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, onGui)
+    if not onGui and input.KeyCode == Enum.KeyCode.T then
+        teamCheck = not teamCheck
+    end
+end)
+
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
+local namecallMethod = getnamecallmethod or get_namecall_method
+local newClose = newcclosure or function(f) return f end
+
+mt.__namecall = newClose(function(...) [nonamecall]
+    local method = namecallMethod()
+    local args = {...}
+
+if getgenv().SilentAim == true then
+    if tostring(method) == "FireServer" and tostring(args[1]) == "HitPart" then
+        args[2] = getClosestPlayerToCursor().Character.Head
+        args[3] = getClosestPlayerToCursor().Character.Head.Position
+
+        return oldNamecall(unpack(args))
+    end
+end
+
+    return oldNamecall(...)
+end)
+
+local Page = UI.New({
+    Title = 'Visuals'
 })
 
-Page.Button({
-    Text = "ESP",
-    Callback = function()
-        
-        local function addEsp(object, parent, size, identifier)
-            local billboard = Instance.new("BillboardGui", parent)
-            billboard.Size = size
-            if identifier == "object" then
-                billboard.Adornee = object
-            end
-            billboard.AlwaysOnTop = true
-            billboard.Name = object.Name
-         
-            local lines = Instance.new("Frame", billboard)
-            lines.Name = "lines"
-            lines.Size = UDim2.new(1,-2,1,-2)
-            lines.Position = UDim2.new(0,1,0,1)
-            lines.BackgroundTransparency = 1
-         
-            local outlines = Instance.new("Folder", lines)
-            outlines.Name = "outlines"
-            local inlines = Instance.new("Folder", lines)
-            inlines.Name = "inlines"
-         
-            local outline1 = Instance.new("Frame", outlines)
-            outline1.Name = "left"
-            outline1.BorderSizePixel = 0
-            outline1.BackgroundColor3 = Color3.new(0,0,0)
-            outline1.Size = UDim2.new(0,-1,1,0)
-         
-            local outline2 = Instance.new("Frame", outlines)
-            outline2.Name = "right"
-            outline2.BorderSizePixel = 0
-            outline2.BackgroundColor3 = Color3.new(0,0,0)
-            outline2.Position = UDim2.new(1,0,0,0)
-            outline2.Size = UDim2.new(0,1,1,0)
-         
-            local outline3 = Instance.new("Frame", outlines)
-            outline3.Name = "up"
-            outline3.BorderSizePixel = 0
-            outline3.BackgroundColor3 = Color3.new(0,0,0)
-            outline3.Size = UDim2.new(1,0,0,-1)
-         
-            local outline4 = Instance.new("Frame", outlines)
-            outline4.Name = "down"
-            outline4.BorderSizePixel = 0
-            outline4.BackgroundColor3 = Color3.new(0,0,0)
-            outline4.Position = UDim2.new(0,0,1,0)
-            outline4.Size = UDim2.new(1,0,0,1)
-         
-            local inline1 = Instance.new("Frame", inlines)
-            inline1.Name = "left"
-            inline1.BorderSizePixel = 0
-            inline1.Size = UDim2.new(0,1,1,0)
-         
-            local inline2 = Instance.new("Frame", inlines)
-            inline2.Name = "right"
-            inline2.BorderSizePixel = 0
-            inline2.Position = UDim2.new(1,0,0,0)
-            inline2.Size = UDim2.new(0,-1,1,0)
-         
-            local inline3 = Instance.new("Frame", inlines)
-            inline3.Name = "up"
-            inline3.BorderSizePixel = 0
-            inline3.Size = UDim2.new(1,0,0,1)
-         
-            local inline4 = Instance.new("Frame", inlines)
-            inline4.Name = "down"
-            inline4.BorderSizePixel = 0
-            inline4.Position = UDim2.new(0,0,1,0)
-            inline4.Size = UDim2.new(1,0,0,-1)
-         
-            if identifier == "object" then
-                local label = Instance.new("TextLabel", billboard)
-                label.Name = "label"
-                label.Size = UDim2.new(1,0,1,0)
-                label.BackgroundTransparency = 1
-                label.TextStrokeTransparency = 0
-                label.TextColor3 = cheats.esp_itemtextcolor
-                label.Text = object.Name
-                label.Font = Enum.Font.Code
-                label.TextSize = 16
-                object.AncestryChanged:connect(function()
-                    if object.Name ~= "C4" then
-                        if object.Parent ~= workspace.Debris then
-                            billboard:Destroy()
-                        end
-                    end
-                end)
-            end
-         
-            if identifier == "player" then
-                spawn(function()
-                    while object do
-                        wait()
-                        if cheats.esp then
-                            if object.Character and object.Character:FindFirstChild"LowerTorso" then
-                                local head = object.Character:FindFirstChild"Head"
-                                local lowerpart = object.Character:FindFirstChild"LeftFoot"
-                                local leftarm = object.Character:FindFirstChild"LeftUpperArm"
-                                local rightarm = object.Character:FindFirstChild"RightUpperArm"
-                                if (head and lowerpart) and (leftarm and rightarm) then
-                                    billboard.Size = UDim2.new(((leftarm.Position+Vector3.new(0,0.5,0))-(rightarm.Position-Vector3.new(0,0.5,0))).magnitude,0,((head.Position+Vector3.new(0,1,0))-(lowerpart.Position)).magnitude,0)
-                                end
-                                local color = cheats.esp_enemycolor
-                                if object.Team ~= localp.Team then
-                                    color = cheats.esp_enemycolor
-                                    billboard.Adornee = object.Character.LowerTorso
-                                else
-                                    if cheats.esptarget == "Both" then
-                                        color = cheats.esp_teamcolor
-                                        billboard.Adornee = object.Character.LowerTorso
-                                    else
-                                        billboard.Adornee = nil
-                                    end
-                                end
-                                if object.Name == workspace.Status.HasBomb.Value then
-                                    color = cheats.esp_bombcarriercolor
-                                end
-                                inline1.BackgroundColor3 = color
-                                inline2.BackgroundColor3 = color
-                                inline3.BackgroundColor3 = color
-                                inline4.BackgroundColor3 = color
-                            end
-                        else
-                            billboard.Adornee = nil
-                        end
-                    end
-                end)
-            end
-        end
-        
-        players.PlayerAdded:connect(function(player)
-            local size = UDim2.new(4,0,5.6,0)
-            addEsp(player, espfolder, size, "player")
-        end)
-         
-        for _,player in pairs(players:GetChildren()) do
-            if player.Name ~= localp.Name and not espfolder:FindFirstChild(player.Name) then
-                local size = UDim2.new(4,0,5.6,0)
-                addEsp(player, espfolder, size, "player")
-            end
-        end
-         
-        players.PlayerRemoving:connect(function(player)
-            if espfolder:FindFirstChild(player.Name) then
-                espfolder[player.Name]:Destroy()
-            end
-        end)
-         
-        local function objectInWorkspace(child)
-            if cheats.weapons then
-                local primaries = {semis, heavies, rifles}
-                for _,v in pairs(primaries) do
-                    for _,w in pairs(v) do
-                        if child.Name == w then
-                            local size = UDim2.new(1.4,0,1.4,0)
-                            addEsp(child, bombfolder, size, "object")
-                        end
-                    end
-                end
-                for _,v in pairs(pistols) do
-                    if child.Name == v then
-                        local size = UDim2.new(1.4,0,1.4,0)
-                        addEsp(child, bombfolder, size, "object")
-                    end
-                end
-            end
-            if child.Name == "C4" then
-                if cheats.bomb then
-                    if bombfolder:FindFirstChild"C4" then
-                        bombfolder.C4.Adornee = child
-                    else
-                        local size = UDim2.new(1.4,0,1.4,0)
-                        addEsp(child, bombfolder, size, "object")
-                        for _,v in pairs(bombfolder.C4.lines.inlines:GetChildren()) do
-                            v.BackgroundColor3 = cheats.esp_bombcolor
-                        end
-                    end
-                    if child.Parent == workspace then
-                        for i=38,0,-1 do
-                            wait(1)
-                            bombfolder.C4.label.Text = "C4 - "..i
-                        end
-                        bombfolder.C4.label.Text = "C4"
-                    end
-                end
-            end
-        end
+Page.Toggle({
+    Text = 'Enable ESP',
+    Callback = function(arg)
+        getgenv().ESPenabled = arg
     end
 })
 
+Page.Toggle({
+    Text = 'Enable Names',
+    Callback = function(arg)
+        getgenv().Names = arg
+    end
+})
 
-Page.Button({
-    Text = "OP Obvious HitBox Extender",
-    Callback = function()
-        local size = 30
-        local hrpsize = 28
-        for i,v in next, game.Players:GetPlayers() do
-            if v.Name ~= game.Players.LocalPlayer.Name then
-                game:GetService("RunService").Heartbeat:Connect(function()
-                    for _, e in next, getconnections(v.Character.HeadHB:GetPropertyChangedSignal("Size")) do
-                    e:Disable()
-                    end
+Page.Toggle({
+    Text = 'Enable Chams',
+    Callback = function(arg)
+        getgenv().Chams = arg
+    end
+})
 
-                    for _, e in next, getconnections(v.Character.HeadHB.Changed) do
-                    e:Disable()
-                    end
+Page.Toggle({
+    Text = 'Enable Tracers',
+    Callback = function(arg)
+        getgenv().Tracers = arg
+    end
+})
 
-                    pcall(function()
-                        v.Character.HeadHB.Size = Vector3.new(size, size, size)
-                        v.Character.HeadHB.Transparency = 0.5
-                        v.Character.HeadHB.CanCollide = false
-                        v.Character.HumanoidRootPart.Size = Vector3.new(hrpsize, hrpsize, hrpsize)
-                        v.Character.HumanoidRootPart.CanCollide = false
-                    end)
-                end)
+Page.Toggle({
+    Text = 'Show Team Colors',
+    Callback = function(arg)
+        getgenv().ShowTeamColors = arg
+    end
+})
+
+Page.Toggle({
+    Text = 'Show Main Team',
+    Callback = function(arg)
+        getgenv().ShowMainTeam = arg
+    end
+})
+
+Page.Slider({
+    Text = "Max Distance",
+    Callback = function(arg)
+        getgenv().MaxDistance = arg
+    end,
+    Min = 1,
+    Max = 5000,
+    Def = 1
+})
+
+getgenv().ESPenabled = false
+getgenv().MaxDistance = 750
+getgenv().Names = false
+getgenv().Chams = false
+getgenv().Tracers = false
+getgenv().espDefaultColor = Color3.fromRGB(255, 255, 255)
+getgenv().ShowTeamColors = false
+getgenv().ShowMainTeam = false
+local Player = game.Players.LocalPlayer
+local RS = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local Center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y + 150 / 2)
+function PlayerLeft(plr, Tracer, Cham)
+    Tracer:Remove()
+    Cham:Remove()
+end
+function CreateLabel(OtherPlayer)
+    local Label = Drawing.new("Text")
+    Label.Text = OtherPlayer.Name
+    Label.Center = true
+    Label.Outline = false
+    Label.Visible = true
+    return Label
+end
+function CreateSquare()
+    local Square = Drawing.new("Square")
+    Square.Visible = true
+    Square.Filled = false
+    Square.Thickness = 1
+    return Square
+end
+function CreateLine()
+    local Line = Drawing.new("Line")
+    Line.Visible = true
+    Line.From = Vector2.new(Center.x, Center.y)
+    return Line
+end
+function UpdateName(Label)
+    if getgenv().Names ~= true then
+        Label.Visible = false
+    else
+        Label.Visible = true
+    end
+end
+function UpdateChams(Cham)
+    if getgenv().Chams ~= true then
+        Cham.Visible = false
+    else
+        Cham.Visible = true
+    end
+end
+function UpdateTracers(Tracer)
+    if getgenv().Tracers ~= true then
+        Tracer.Visible = false
+    else
+        Tracer.Visible = true
+    end
+end
+function GetHumanoidRootPartPos()
+    local HumanoidRootPartP = Vector3.new(0, 0, 0)
+    if Player.Character ~= nil then
+        local HumanoidRootPart = Player.Character:FindFirstChild("HumanoidRootPart")
+        if HumanoidRootPart then
+            HumanoidRootPartP = HumanoidRootPart.Position
+        end
+    end
+    return HumanoidRootPartP
+end
+function GetPlrHumanoidRootPartPos(OtherPlayer, Tracer, Cham, Label)
+    HumanoidRootPartP = GetHumanoidRootPartPos()
+    local AimPosition
+    if OtherPlayer.Character == nil then
+        AimPosition = Vector3.new(0, 0, 0)
+    else
+        local HumanoidRootPart = OtherPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if HumanoidRootPart then
+            if (HumanoidRootPartP - HumanoidRootPart.Position).magnitude <= tonumber(getgenv().MaxDistance) then
+                Tracer.Visible = true
+                Cham.Visible = true
+                Label.Visible = true
+            else
+                Tracer.Visible = false
+                Cham.Visible = false
+                Label.Visible = false
+            end
+            Label.Size = 17.5
+            Cham.Size = Vector2.new(30, 45)
+            AimPosition = HumanoidRootPart.Position
+        else
+            AimPosition = Vector3.new(0, 0, 0)
+        end
+    end
+    return AimPosition
+end
+function SetChamTracerColor(OtherPlayer, Tracer, Cham, Label)
+    pcall(
+        function()
+            if getgenv().ShowTeamColors ~= false then
+                if OtherPlayer.Team ~= nil then
+                    Tracer.Color = OtherPlayer.Team.TeamColor.Color
+                    Cham.Color = OtherPlayer.Team.TeamColor.Color
+                    Label.Color = OtherPlayer.Team.TeamColor.Color
+                else
+                    Tracer.Color = getgenv().espDefaultColor
+                    Cham.Color = getgenv().espDefaultColor
+                    Label.Color = getgenv().espDefaultColor
+                end
+            else
+                Tracer.Color = getgenv().espDefaultColor
+                Cham.Color = getgenv().espDefaultColor
+                Label.Color = getgenv().espDefaultColor
             end
         end
-    end,
-    Menu = {
-        Information = function(self)
-            UI.Banner({
-                Text = "More op version of HItbox Extender, may have to re execute every once and a while"            
-            })
+    )
+end
+function SetShowMainTeam(OtherPlayer, Tracer, Cham, Label)
+    if getgenv().ShowMainTeam == true then
+        Tracer.Visible = true
+        Cham.Visible = true
+        Label.Visible = true
+    else
+        if Player.Team ~= nil then
+            if Player.Team.Name == OtherPlayer.Team.Name then
+                Tracer.Visible = false
+                Cham.Visible = false
+                Label.Visible = false
+            else
+                Tracer.Visible = true
+                Cham.Visible = true
+                Label.Visible = true
+            end
         end
-    }
-    })
+    end
+end
+function UpdateChamsAndTracerPos(OtherPlayer, ScreenPosition, Tracer, Cham, Label)
+    if ScreenPosition.Z > 0 and OtherPlayer.Character ~= nil then
+        Tracer.Visible = true
+        Cham.Visible = true
+        SetShowMainTeam(OtherPlayer, Tracer, Cham, Label)
+        UpdateName(Label)
+        UpdateChams(Cham)
+        UpdateTracers(Tracer)
+        SetChamTracerColor(OtherPlayer, Tracer, Cham, Label)
+        if getgenv().ESPenabled ~= true then Tracer.Visible = false;Cham.Visible = false;Label.Visible = false; end;
+        Cham.Position = Vector2.new(ScreenPosition.x, ScreenPosition.y) + Vector2.new(-17.5, -5)
+        Tracer.To = Vector2.new(ScreenPosition.x, ScreenPosition.y)
+        Label.Position = Cham.Position + Vector2.new(10, -10)
+    else
+        Tracer.Visible = false
+        Cham.Visible = false
+        Label.Visible = false
+    end
+end
+for i, OtherPlayer in pairs(game.Players:GetPlayers()) do
+    if OtherPlayer.Name ~= Player.Name then
+        local PlayerLeftB = false
+        local Label = CreateLabel(OtherPlayer)
+        local Square = CreateSquare()
+        local Line = CreateLine()
+        local AimPosition
+        local ScreenPosition
+        game.Players.PlayerRemoving:Connect(
+            function(PlayerLeaving)
+                if PlayerLeaving.Name == OtherPlayer.Name then
+                    PlayerLeftB = true
+                    PlayerLeft(plr, Line, Square)
+                end
+            end
+        )
+        local function RSL()
+            if PlayerLeftB ~= true then
+                local HumanoidRootPartP = GetHumanoidRootPartPos()
+                AimPosition = GetPlrHumanoidRootPartPos(OtherPlayer, Line, Square, Label)
+                ScreenPosition = Vector3.new(0, 0, 0)
+                ScreenPosition, V = Camera:WorldToViewportPoint(AimPosition)
+                UpdateChamsAndTracerPos(OtherPlayer, ScreenPosition, Line, Square, Label)
+                if getgenv().ESPenabled ~= true then Line.Visible = false;Square.Visible = false;Label.Visible = false; end;
+            end
+        end
+        RS.RenderStepped:connect(RSL)
+    end
+end
+
+game.Players.PlayerAdded:Connect(
+    function(OtherPlayer)
+        if OtherPlayer.Name ~= Player.Name then
+            local PlayerLeftB = false
+            local Label = CreateLabel(OtherPlayer)
+            local Square = CreateSquare()
+            local Line = CreateLine()
+            local AimPosition
+            local ScreenPosition
+            game.Players.PlayerRemoving:Connect(
+                function(PlayerLeaving)
+                    if PlayerLeaving.Name == OtherPlayer.Name then
+                        PlayerLeftB = true
+                        PlayerLeft(plr, Line, Square)
+                    end
+                end
+            )
+            local function RSL()
+                if PlayerLeftB ~= true and getgenv().ESPenabled ~= false then
+                    local HumanoidRootPartP = GetHumanoidRootPartPos()
+                    AimPosition = GetPlrHumanoidRootPartPos(OtherPlayer, Line, Square, Label)
+                    ScreenPosition = Vector3.new(0, 0, 0)
+                    ScreenPosition, V = Camera:WorldToViewportPoint(AimPosition)
+                    UpdateChamsAndTracerPos(OtherPlayer, ScreenPosition, Line, Square, Label)
+                end
+            end
+            RS.RenderStepped:connect(RSL)
+        end
+    end
+)
 
 local Page = UI.New({
     Title = "Mod Weapon/Knife"
