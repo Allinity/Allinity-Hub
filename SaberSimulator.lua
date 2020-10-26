@@ -137,7 +137,8 @@ Menu = {
 
 local Page = UI.New({
     Title = 'Misc'
-
+})
+		
 Page.Button({
     Text = "Inf Jumps",
     Callback = function()
