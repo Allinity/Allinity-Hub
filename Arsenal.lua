@@ -30,6 +30,14 @@ Page.Toggle({
     end
 })
 
+Page.Toggle({
+    Text = 'Kill All (E to kill all)',
+    Callback = function(arg)
+        getgenv().KillAll = arg
+    end
+})
+
+getgenv().KillAll = false
 getgenv().SilentAim = false
 
 local localPlayer = game:GetService("Players").LocalPlayer
@@ -92,6 +100,42 @@ if getgenv().SilentAim == true then
 end
 
     return oldNamecall(...)
+end)
+
+game.Players.LocalPlayer:GetMouse().KeyDown:Connect(function(k)
+    if k == 'e' then
+        local Gun = game.ReplicatedStorage.Weapons:FindFirstChild(game.Players.LocalPlayer.NRPBS.EquippedTool.Value);
+        local Headshot = math.random() > .6 and true or false;
+        for i,a in pairs(game.Players:GetPlayers()) do
+            if a and a.Character and a.Character:FindFirstChild('Head') then
+                local Distance = (game.Players.LocalPlayer.Character.Head.Position - a.Character.Head.Position).magnitude
+                if getgenv().KillAll == true then
+                for i = 1,10 do
+                    game.ReplicatedStorage.Events.HitPart:FireServer(a.Character.Head,
+                    a.Character.Head.Position + Vector3.new(math.random(), math.random(), math.random()),
+                    Gun.Name,
+                    Headshot and 2 or 1,
+                    Distance,
+                    Backstab,
+                    Headshot,
+                    false,
+                    1,
+                    false,
+                    Gun.FireRate.Value,
+                    Gun.ReloadTime.Value,
+                    Gun.Ammo.Value,
+                    Gun.StoredAmmo.Value,
+                    Gun.Bullets.Value,
+                    Gun.EquipTime.Value,
+                    Gun.RecoilControl.Value,
+                    Gun.Auto.Value,
+                    Gun['Speed%'].Value,
+                    game.ReplicatedStorage.wkspc.DistributedTime.Value);
+                end
+            end
+        end
+    end
+end
 end)
 
 local Page = UI.New({
